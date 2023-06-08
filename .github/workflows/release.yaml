@@ -68,7 +68,7 @@ jobs:
         run: |
           image_tag="ghcr.io/azuki-bar/hello-buildjet-nextjs:${{ github.sha }}"
           docker buildx imagetools create --dry-run \
-            -tag ${image_tag} \
+            --tag ${image_tag} \
             ${image_tag}-arm64 \
             ${image_tag}-amd64
 
