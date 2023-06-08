@@ -79,12 +79,11 @@ jobs:
 
       - name: Check New Manifests
         run: |
+          image_tag="ghcr.io/azuki-bar/hello-buildjet-nextjs:${{ github.sha }}"
           # 表示用
-          docker buildx imagetools inspect
+          docker buildx imagetools inspect ${image_tag}
 
-          docker buildx imagetools inspect \
-            ghcr.io/azuki-bar/hello-buildjet-nextjs:${{ github.sha }} \
-            --format "{{json .Image}}" \
+          docker buildx imagetools inspect ${image_tag} --format "{{json .Image}}" \
           | jq -e '. | keys | contains(["linux/amd64", "linux/arm64"])'
 
   build-with-qemu:
