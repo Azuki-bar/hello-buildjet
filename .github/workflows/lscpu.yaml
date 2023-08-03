@@ -28,13 +28,23 @@ jobs:
           # - "3"
     runs-on: ${{ matrix.runs-on }}
     steps:
-      - name: Show lscpu
-        run: |
-          cat <<EOF >> "$GITHUB_STEP_SUMMARY"
-          ## ${{ matrix.runs-on }} - ${{ matrix.index }}
-          ```
-          $ lscpu
-          $(lscpu)
-
-          ```
-          EOF
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const { execSync } = require('child_process')
+            const body = [
+              "## ${{ matrix.runs-on }} - ${{ matrix.index }}",
+              "",
+              "```",
+              "$ lscpu",
+              execSync('lscpu').toString(),
+              "```",
+              "",
+            ].join("\n")
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body,
+            })
