@@ -42,7 +42,7 @@ jobs:
               "",
             ].join("\n")
             
-            github.rest.issues.createComment({
+            github.rest.pulls.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
