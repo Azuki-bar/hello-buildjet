@@ -33,18 +33,10 @@ jobs:
           script: |
             const { execSync } = require('child_process')
             const body = [
-              "## ${{ matrix.runs-on }} - ${{ matrix.index }}",
-              "",
-              "```",
               "$ lscpu",
               execSync('lscpu').toString(),
-              "```",
-              "",
             ].join("\n")
-            
-            github.rest.pulls.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: body,
-            })
+            await core.summary
+              .addHeading("${{ matrix.runs-on }} - ${{ matrix.index }}")
+              .addCodeBlock(body)
+              .write()
