@@ -31,10 +31,9 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            const { execSync } = require('child_process')
             const body = [
               "$ lscpu",
-              execSync('lscpu').toString(),
+              await exec.exec('lscpu'),
             ].join("\n")
             await core.summary
               .addHeading("${{ matrix.runs-on }} - ${{ matrix.index }}")
