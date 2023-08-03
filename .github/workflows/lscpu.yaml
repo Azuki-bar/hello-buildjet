@@ -1,0 +1,42 @@
+name: show lscpu
+on:
+  push:
+
+permissions:
+  contents: read
+jobs:
+  build:
+    name: Upload lscpu Result
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          - "ubuntu-latest"
+          - "buildjet-2vcpu-ubuntu-2204"
+          - "buildjet-4vcpu-ubuntu-2204"
+          - "buildjet-8vcpu-ubuntu-2204"
+          - "buildjet-16vcpu-ubuntu-2204"
+          - "buildjet-32vcpu-ubuntu-2204"
+          - "buildjet-2vcpu-ubuntu-2204-arm"
+          - "buildjet-4vcpu-ubuntu-2204-arm"
+          - "buildjet-8vcpu-ubuntu-2204-arm"
+          - "buildjet-16vcpu-ubuntu-2204-arm"
+          - "buildjet-32vcpu-ubuntu-2204-arm"
+        index: 
+          - "1"
+          - "2"
+          - "3"
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const { execSync } = require('child_process')
+            const body = [
+              "$ lscpu",
+              execSync('lscpu').toString(),
+            ].join("\n")
+            await core.summary
+              .addHeading("${{ matrix.runs-on }} - ${{ matrix.index }}")
+              .addCodeBlock(body)
+              .write()
